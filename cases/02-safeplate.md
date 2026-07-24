@@ -5,36 +5,66 @@
 
 ## Resumo
 
-App mobile (Android/iOS) para pessoas com restrições alimentares encontrarem estabelecimentos seguros no mapa, com painel admin, pagamentos e backend de suporte.
+Produto multiplataforma: app Flutter (consumer + business), painel admin web, Firebase como backend de dados/auth/push, Mapbox, geofencing com filtros dietéticos, gamificação anti-fraude de check-in, e pagamentos (Mercado Pago / IAP).
 
-## Problema
+## Domínio real
 
-Quem tem restrição (glúten, lactose, vegano, etc.) não confia em busca genérica. Estabelecimentos querem divulgar opções seguras e atrair esse público.
+Ajudar pessoas com restrições alimentares a achar estabelecimentos **compatíveis com o conjunto** de restrições (não “qualquer tag”), com confiança social (check-in, review, selos) e camada business (menu, delivery, boost, cupons).
 
-## Abordagem
+## Arquitetura implementada
 
-- **Flutter/Dart** app (`lib/`) com mapas (Mapbox), Firebase Auth/Firestore/Storage/Messaging
-- **Admin** web (React/Next) + API Node/Express
-- Pagamentos (Mercado Pago) para planos de empresas
-- Scripts/ops de VPS e integração WhatsApp auxiliares no monorepo
+```
+lib/
+  models/        establishment, checkin, seal, menu, delivery, trip…
+  providers/     auth, establishment (stream + filtros), cart, feature flags…
+  services/      mapbox, geofencing, gamification, mercado_pago, offline, iap…
+  screens/       home/mapa, business_*, checkout, leaderboard, offline…
+admin-dashboard/ frontend + backend (ops/pagamentos)
+```
+
+## Destaques técnicos
+
+### 1. Filtro dietético conjuntivo + tempo real
+`EstablishmentProvider` escuta Firestore stream, reaplica filtros e **atualiza geofences** automaticamente.
+
+Restrições selecionadas exigem `contains` de **todas** (`every`), não OR frouxo.
+
+→ [snippet](../snippets/safeplate/dietary-filters-stream.md)
+
+### 2. Geofencing sensível a preferências
+Registra até 50 regiões (raio 300m, loitering 60s), **pulando** estabelecimentos que não cobrem as preferências do usuário. Notifica entrada com contexto dietético.
+
+→ [snippet](../snippets/safeplate/geofencing-dietary.md)
+
+### 3. Gamificação com regras anti-abuso
+- pontos por ação (check-in/review/referral)
+- selos Bronze→Prata→Ouro por thresholds compostos
+- check-in: 1×/estabelecimento/dia + cooldown 1h entre check-ins
+- workaround explícito à limitação do Firestore (sem múltiplos range filters)
+
+→ [snippet](../snippets/safeplate/checkin-antifraud.md)
+
+### 4. Camada business no mesmo app
+Screens de menu, delivery config, boost insights, cupons, onboarding de estabelecimento — não é só “mapa bonito”.
+
+### 5. Ops auxiliares no monorepo
+Serviços VPS/WhatsApp e `codemagic.yaml` para build mobile (sinal de ciclo real de release).
 
 ## Decisões
 
-1. **Flutter** para um código → duas lojas (Android/iOS)
-2. **Firebase** para auth/dados/push com time solo
-3. **Admin separado** para operação comercial sem inflar o app
-
-## Validação
-
-- `DOCUMENTACAO.md` / README de produto
-- `codemagic.yaml` para pipeline mobile
-- Estrutura `test/`, `admin-dashboard/`, `web/`
+| Decisão | Por quê |
+|---------|---------|
+| Flutter | um código Android/iOS |
+| Firebase | auth/dados/push com time solo |
+| Geofence filtrado | notificação só quando é relevante à restrição |
+| Regras de check-in rígidas | ranking sem farm fácil |
 
 ## Limites
 
-- Secrets de Firebase/Google Services ficam fora do portfólio público
-- Qualidade de dados de estabelecimentos depende de curadoria/ops
+- Arquivos de config Firebase no repo exigem higiene de secrets em releases públicas
+- Pastas aninhadas (`sitepratoseguro`, cópias de dashboard) aumentam ruído do monorepo
+- Geolocalização background depende de permissões OS
 
 ## Reflexão
 
-Separar app consumer de admin/pagamentos manteve o core mobile enxuto enquanto o negócio crescia.
+Inovação aqui é o **encaixe**: restrição alimentar ∩ proximidade ∩ engajamento confiável — com código que trata edge cases de Firestore e de abuso.

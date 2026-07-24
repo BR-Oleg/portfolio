@@ -1,39 +1,39 @@
-# Arquitetura — SaaSML (C4-lite)
-
-Repo privado. Diagrama conceitual (sem endpoints secretos).
+# Arquitetura — SaaSML (C4-lite aprofundada)
 
 ## Context
 
 ```mermaid
 flowchart LR
-  Ops[Operador / lojista] --> App[SaaSML Next.js]
-  App --> FB[(Firebase / Auth-Dados)]
-  App --> SB[(Supabase / SQL)]
+  Ops[Operador multi-loja] --> App[SaaSML Next.js]
+  App --> SB[(Supabase SQL)]
+  App --> FB[(Firebase)]
   App --> Redis[(Redis)]
-  App --> ML[Mercado Livre API]
-  App --> Shopee[Shopee API]
-  App --> Mail[E-mail / XML ingest]
-  App --> DFe[Bridge DF-e / NF-e]
-  App --> WA[WhatsApp automations]
+  App --> ML[Mercado Livre]
+  App --> SP[Shopee]
+  App --> MP[Mercado Pago / recebíveis]
+  App --> Mail[Gmail / XML inbound]
+  App --> DFe[Bridge Unimake NF-e]
+  App --> WA[WhatsApp ops bot]
 ```
 
-## Containers
+## Containers / bounded contexts (no código)
 
-| Container | Responsabilidade |
-|-----------|------------------|
-| Next.js app | UI + APIs de domínio (inventário, pedidos, financeiro, mapas) |
-| unimake-dfe-bridge | Isolamento fiscal/XML/NF-e |
-| SQL scripts | Evolução de schema/índices/reconciliação |
-| Deploy/VPS scripts | Publicação controlada |
+| Contexto | Artefatos |
+|----------|-----------|
+| Control Tower | `control-tower-*`, shadow parity, row view-model |
+| Order sync | `order-sync-background-worker`, `order-sync-state`, ML/Shopee clients |
+| Money truth | `shopee-order-revenue`, `order-costs`, `history-read-model`, `receipts-reconciliation`, `settlement-policy` |
+| Fiscal | `unimake-nfe`, `services/unimake-dfe-bridge`, Focus/Bling adapters |
+| Multi-store | `store-scope`, SQL `*_store_scope.sql` |
+
+## Fluxo crítico: pedido → margem honesta
+
+1. Worker sincroniza lojas com timeout/concorrência  
+2. Receita Shopee só “quebra” se gross existe  
+3. Custos montam snapshot versionado no History  
+4. UI mostra tooltip com aviso de custo incompleto  
+5. Recebíveis reconciliam expected vs marketplace  
 
 ## Qualidade
 
-- Testes Vitest
-- Dockerfile
-- Env example sem segredos
-- Índices e guardrails operacionais versionados em SQL
-
-## Afirmações perigosas (evitar)
-
-- “100% automático em todos marketplaces” sem matiz
-- Expor partner keys / tokens
+Vitest em receita, reconciliação, parity, boot, custos · SQL de índice/read model · Docker

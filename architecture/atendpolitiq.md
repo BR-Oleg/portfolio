@@ -1,18 +1,25 @@
-# Arquitetura — AtendPolitiq
+# Arquitetura — AtendPolitiq (profundidade)
 
 ```mermaid
-flowchart LR
-  Citizen[Cidadão WhatsApp] --> WA[Canal WhatsApp]
-  WA --> API[Backend Node]
-  API --> DB[(Persistência de tickets)]
-  Agent[Agente/Admin] --> UI[Frontend React]
-  UI --> API
-  API --> Intel[Temas / sentimento / resumo]
-  Intel --> UI
+flowchart TB
+  WA[WhatsApp / chatbot] -->|history| API[server.js]
+  API --> Parse[processHistory]
+  Parse --> Topic[keywords tema]
+  Parse --> Sent[léxico sentimento]
+  Parse --> Appr[frases aprovação]
+  API --> Norm[normalizeBairro atlas]
+  Norm --> DB[(Mongo Ticket)]
+  DB --> Agg[aggregations dashboard]
+  DB --> Map[GeoJSON + BairroSummary]
+  Map --> OpenAI[resumo IA]
+  OpenAI -->|fallback| Local[últimas falas]
+  UI[React/Vite] --> API
+  API --> RBAC[roles + assign]
 ```
 
-## Qualidade
+## Peças
 
-- RBAC por papel
-- Ticket como unidade operacional
-- Visão territorial (mapa por bairro)
+- `keywords.js` — taxonomia política local
+- `bairros.js` + `dqdecaxias.geojson` — território
+- `BairroSummary` — cache de inteligência por bairro
+- RBAC `superadmin/admin/user/agent`

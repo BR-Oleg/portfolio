@@ -26,9 +26,18 @@ Código sensível permanece em repositórios privados; aqui estão narrativa, ar
 
 ## Como ler
 
-1. Case (problema → decisões → limites)
-2. Diagrama
-3. Prova pública quando existir (`PseudoCRMRanking`)
+1. Case (problema → implementações → decisões → limites)
+2. Diagrama em `architecture/`
+3. Trechos reais sanitizados em `snippets/` (SaaSML, AtendPolitiq, Safeplate)
+4. Prova pública clonável: [`PseudoCRMRanking`](https://github.com/BR-Oleg/PseudoCRMRanking)
+
+### Snippets em destaque
+
+| Projeto | Artefato |
+|---------|----------|
+| SaaSML | [receita Shopee](snippets/saasml/shopee-revenue-contract.md), [snapshot v2](snippets/saasml/history-cost-snapshot.md), [shadow parity](snippets/saasml/control-tower-shadow-parity.md), [sync worker](snippets/saasml/order-sync-worker.md), [NF-e Full](snippets/saasml/nfe-full-guard.md) |
+| AtendPolitiq | [tema/histórico](snippets/atendpolitiq/history-theme.md), [bairro+IA](snippets/atendpolitiq/bairro-ai-summary.md), [RBAC](snippets/atendpolitiq/rbac-assign.md) |
+| Safeplate | [filtros AND](snippets/safeplate/dietary-filters-stream.md), [geofence](snippets/safeplate/geofencing-dietary.md), [check-in](snippets/safeplate/checkin-antifraud.md) |
 
 ## Contato
 
