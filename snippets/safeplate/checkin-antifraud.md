@@ -27,4 +27,4 @@ if (minutesSinceLast < 60) {
 // → Ouro (25 reviews + 10 referrals)
 ```
 
-**Por que importa:** gamificação com fricção anti-farm, respeitando limites do Firestore.
+**Por que importa:** gamificação com fricção anti-farm e filtro em memória onde a query do Firestore não cobre.
