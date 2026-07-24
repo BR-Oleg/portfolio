@@ -1,12 +1,12 @@
-# Snippet — contrato de receita Shopee
+# Snippet â€” contrato de receita Shopee
 
-Fonte: `src/lib/shopee-order-revenue.ts` (sanitizado)
+Fonte: `src/lib/shopee-order-revenue.ts` 
 
 ```ts
 export function resolveShopeeOrderRevenue(input: ShopeeOrderRevenueInput): ShopeeOrderRevenueBreakdown {
   const revenue = toMoney(input.price);
   const storedGrossAmount = toMoney(input.marketplace_gross_amount);
-  // Só trata cascade anúncio→cupons se o sync persistiu gross real.
+  // SÃ³ trata cascade anÃºncioâ†’cupons se o sync persistiu gross real.
   // Fallback gross=revenue esconderia dado faltante e distorceria margem %.
   const hasRevenueBreakdown = input.isShopee && storedGrossAmount > 0;
   const grossAmount = hasRevenueBreakdown ? storedGrossAmount : revenue;
@@ -20,4 +20,4 @@ export function resolveShopeeOrderRevenue(input: ShopeeOrderRevenueInput): Shope
 }
 ```
 
-**Por que importa:** evita dashboard “otimista” quando o marketplace não entregou breakdown.
+**Por que importa:** evita dashboard â€œotimistaâ€ quando o marketplace nÃ£o entregou breakdown.

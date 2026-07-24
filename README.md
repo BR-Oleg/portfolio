@@ -1,44 +1,26 @@
-# Portfólio de Engenharia — BR-Oleg
+# Guilherme — engenharia de produto e sistemas
 
-Cases técnicos redigidos a partir de projetos **solo** (sem colaboradores).  
-Código sensível permanece em repositórios privados; aqui estão narrativa, arquitetura e trechos sanitizados.
+Construo sistemas full-stack de ponta a ponta: SaaS operacional para marketplaces, apps mobile com domínio real e plataformas de atendimento.
 
-## Tese
+Este repositório reúne **cases** dos projetos que melhor mostram como eu penso e implemento — com diagramas e trechos de código.
 
-> Engenheiro full-stack com perfil de Tech Lead: entrego produtos web/mobile e sistemas operacionais de ponta a ponta — marketplaces/SaaS, apps consumer, atendimento e telefonia.
+## Como navegar
 
-## Projetos em destaque
+| Projeto | O que resolve | Comece por |
+|---------|---------------|------------|
+| [SaaSML](cases/01-saasml.md) | Torre de controle para lojas em Mercado Livre e Shopee (pedidos, margem, NF-e, recebíveis) | Case + [snippets](snippets/saasml/) |
+| [Prato Seguro](cases/02-safeplate.md) | App para quem tem restrição alimentar achar lugares seguros no mapa | Case + [snippets](snippets/safeplate/) |
+| [AtendPolitiq](cases/03-dashboard-atendpolitiq.md) | Atendimento político via WhatsApp com tickets, mapa por bairro e papéis de time | Case + [snippets](snippets/atendpolitiq/) |
+| [Omnichannel](cases/04-chat-omnichannel.md) | Central de atendimento multi-canal com filas e multi-tenant | Case |
+| [Discador](cases/05-dialer-zenith.md) | Discador preditivo com Asterisk, campanhas e agentes | Case |
+| [PseudoCRMRanking](cases/06-pseudocrm-ranking.md) | Gamificação de vendas — código aberto para clonar e rodar | [Repo](https://github.com/BR-Oleg/PseudoCRMRanking) |
 
-| Case | Domínio | Stack (alto nível) | Repo |
-|------|---------|--------------------|------|
-| [SaaSML — torre de controle operacional](cases/01-saasml.md) | Inventário, marketplaces, NF-e, financeiro | Next.js, Firebase/Supabase, Redis, SQL, Docker, Vitest | privado |
-| [Prato Seguro](cases/02-safeplate.md) | App de restrições alimentares + admin + pagamentos | Flutter, Firebase, Next/Node, Mapbox | privado |
-| [AtendPolitiq / AtendSys](cases/03-dashboard-atendpolitiq.md) | Atendimento WhatsApp + inteligência + mapa | Node, React/Vite, WhatsApp, IA de temas/sentimento | privado |
-| [Omnichannel Chat](cases/04-chat-omnichannel.md) | Multi-canal (WhatsApp e outros), tickets, filas | TypeScript, Vue/Quasar, Postgres, Redis/Bull, Docker | privado |
-| [Discador preditivo](cases/05-dialer-zenith.md) | Campanhas + Asterisk + agentes | NestJS, React, Postgres, Redis, Docker | privado |
-| [PseudoCRMRanking](cases/06-pseudocrm-ranking.md) | Gamificação de vendas (prova pública) | Express, MongoDB, React/Vite | [público](https://github.com/BR-Oleg/PseudoCRMRanking) |
+Arquitetura (visões C4-lite): [`architecture/`](architecture/).
 
-## Arquitetura (C4-lite)
+## Em uma frase
 
-- [SaaSML](architecture/saasml.md)
-- [Prato Seguro](architecture/safeplate.md)
-- [AtendPolitiq](architecture/atendpolitiq.md)
-
-## Como ler
-
-1. Case (problema → implementações → decisões → limites)
-2. Diagrama em `architecture/`
-3. Trechos reais sanitizados em `snippets/` (SaaSML, AtendPolitiq, Safeplate)
-4. Prova pública clonável: [`PseudoCRMRanking`](https://github.com/BR-Oleg/PseudoCRMRanking)
-
-### Snippets em destaque
-
-| Projeto | Artefato |
-|---------|----------|
-| SaaSML | [receita Shopee](snippets/saasml/shopee-revenue-contract.md), [snapshot v2](snippets/saasml/history-cost-snapshot.md), [shadow parity](snippets/saasml/control-tower-shadow-parity.md), [sync worker](snippets/saasml/order-sync-worker.md), [NF-e Full](snippets/saasml/nfe-full-guard.md) |
-| AtendPolitiq | [tema/histórico](snippets/atendpolitiq/history-theme.md), [bairro+IA](snippets/atendpolitiq/bairro-ai-summary.md), [RBAC](snippets/atendpolitiq/rbac-assign.md) |
-| Safeplate | [filtros AND](snippets/safeplate/dietary-filters-stream.md), [geofence](snippets/safeplate/geofencing-dietary.md), [check-in](snippets/safeplate/checkin-antifraud.md) |
+Eu entrego o produto inteiro: modelagem, APIs, UI, integrações externas, regras de negócio delicadas e o detalhe que impede o sistema de mentir para o operador.
 
 ## Contato
 
-GitHub: [BR-Oleg](https://github.com/BR-Oleg)
+[github.com/BR-Oleg](https://github.com/BR-Oleg)

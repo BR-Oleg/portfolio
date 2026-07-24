@@ -1,25 +1,32 @@
-# Case Study — PseudoCRMRanking (prova pública)
+# PseudoCRMRanking — gamificação de vendas
 
-- ownership: solo
-- repo: [BR-Oleg/PseudoCRMRanking](https://github.com/BR-Oleg/PseudoCRMRanking)
+Sistema full-stack aberto para equipes de vendas: login, vendas, ranking, metas, conquistas e dashboard admin.
 
-## Resumo
+## O problema
 
-Sistema full-stack de gamificação de vendas: auth JWT, CRUD de vendas, ranking, conquistas, metas e dashboard admin.
+Motivar time comercial com feedback visível (pódio, XP, metas) sem planilha manual.
 
-## Papel no portfólio
+## O que tem
 
-É a **prova pública inspecionável** — não substitui os flagships privados, mas permite ao revisor clonar e avaliar estilo full-stack.
+- Auth JWT (Admin / Colaborador)
+- CRUD de vendas e comissões
+- Ranking e conquistas
+- Dashboard com gráficos
+- Seed para demo rápida
 
 ## Stack
 
-Express + MongoDB/Mongoose + React/Vite + MUI
+Express · MongoDB · React/Vite · MUI
 
-## Limites honestos
+## Rodar
 
-- Projeto de demonstração/portfólio; não vender como produção enterprise
-- Higiene Git foi reforçada (gitignore, LICENSE, remoção de `.env`/`node_modules` do tree)
+Repo: [BR-Oleg/PseudoCRMRanking](https://github.com/BR-Oleg/PseudoCRMRanking)
 
-## Links
+```bash
+cd backend && cp .env.example .env && npm i && npm run seed && npm run dev
+cd frontend && cp .env.example .env && npm i && npm run dev
+```
 
-- Código: https://github.com/BR-Oleg/PseudoCRMRanking
+## Papel no portfólio
+
+Projeto aberto para o revisor clonar. Os cases mais densos de domínio (SaaSML, Prato Seguro, AtendPolitiq) estão em [portfolio](https://github.com/BR-Oleg/portfolio).

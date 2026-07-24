@@ -1,34 +1,32 @@
-# Case Study — Discador preditivo (dialer-zenith)
+# Discador preditivo (dialer-zenith)
 
-- ownership: solo
-- repo: privado `BR-Oleg/dialer-zenith`
+Discador automático integrado ao **Asterisk** (AMI/ARI/AGI): campanhas, agentes, filas Redis e interface React em tempo real.
 
-## Resumo
+## O problema
 
-Discador automático preditivo integrado a Asterisk (AMI/ARI/AGI), com campanhas, agentes, Redis/Bull e UI React.
-
-## Problema
-
-Call centers precisam originar chamadas com taxa preditiva, controlar abandono e dar visibilidade em tempo real aos agentes.
+Call center precisa originar chamadas com taxa preditiva, controlar abandono e dar visibilidade instantânea ao estado do agente.
 
 ## Abordagem
 
-- Backend **NestJS** modular (`asterisk`, `campaigns`, `agents`, websocket)
-- Postgres + Redis
-- Frontend React + shadcn
-- Docker; arquitetura documentada em `ARCHITECTURE.md`
+Backend **NestJS** modular (`asterisk`, `campaigns`, `agents`, websocket), Postgres + Redis/Bull, frontend React + shadcn, Docker. A arquitetura está documentada em `ARCHITECTURE.md` no projeto.
+
+Ideia do preditivo: [snippet](../snippets/predictive-dialer-idea.md)
+
+## Destaques
+
+- Integração bidirecional com PBX
+- Motor de campanha com ajuste por conversão/abandono
+- WebSocket para estado de agente e eventos de chamada
+- Separação clara frontend ops × backend telefonia
 
 ## Decisões
 
-1. NestJS por modularidade/DI em domínio de telefonia
-2. Algoritmo preditivo ajustado por conversão/abandono
-3. WebSocket para estado de agente/chamada
+NestJS pela modularidade/DI em domínio de telefonia; preditivo no servidor (não na UI); containers para reproduzir Asterisk + app.
 
-## Limites
+## Evolução
 
-- Exige Asterisk/troncos reais para prova E2E
-- “Kubernetes ready” é intenção de desenho — validar por ambiente
+Validação contínua em troncos reais e métricas de abandono em painel operacional.
 
-## Reflexão
+## Stack
 
-Telefonia é um domínio impiedoso: o desenho modular e a doc de arquitetura importam tanto quanto a UI.
+NestJS · React · Postgres · Redis · Asterisk · Docker

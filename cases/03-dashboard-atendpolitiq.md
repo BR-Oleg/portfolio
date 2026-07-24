@@ -1,62 +1,53 @@
-# Case Study — AtendPolitiq / AtendSys
+# AtendPolitiq — atendimento político com visão territorial
 
-- ownership: solo
-- repo: privado `BR-Oleg/dashboard_atendpolitiq`
+Dashboard para times de mandato acompanharem conversas de cidadãos no **WhatsApp**: cada conversa vira ticket, ganha tema e sentimento, entra no mapa por bairro e alimenta indicadores do dia.
 
-## Resumo
+## O problema
 
-Sistema de operação política sobre WhatsApp: ingestão de histórico de conversa → ticket → classificação de tema/sentimento → agregações de dashboard → inteligência territorial por bairro (GeoJSON + cache de resumo com OpenAI e fallback).
+Demanda cidadã chega espalhada. Sem fila, papel e território, o time não sabe o que mais dói em cada bairro nem quem está responsável por cada caso.
 
-## O que o código realmente faz (não o folder tree)
+## Abordagem
 
-Backend concentrado em `backend/server.js` + `keywords.js` + `bairros.js` + `dqdecaxias.geojson`.
+Backend Node (`server.js`) + frontend React/Vite. Pipeline:
 
-### Pipeline de um ticket
+1. normalizar histórico (texto `user:/assistant:` ou JSON)
+2. classificar tema (keywords) e sentimento (léxico)
+3. medir sinais de aprovação (“obrigado”, “excelente atendimento”…)
+4. normalizar bairro contra atlas local de Duque de Caxias
+5. persistir ticket com `assignedTo`
+6. agregar dashboard e gerar resumo por bairro (OpenAI, com fallback local)
 
-1. Histórico chega (string multi-linha `user:/assistant:` **ou** JSON)
-2. `processHistory` normaliza para mensagens tipadas
-3. `capturarTema` via dicionário de keywords (`saúde`, `segurança`, …)
-4. `extrairSentimento` por léxico PT-BR (score ±)
-5. `extrairAprovacao` conta frases de feedback (“obrigado”, “excelente atendimento”…)
-6. `normalizeBairro` remove diacríticos e faz match fuzzy contra atlas local de bairros de Duque de Caxias
-7. Persistência Mongo (`Ticket` + `assignedTo`)
-8. Resumos por bairro: OpenAI com **fallback determinístico** se a API falhar
-9. Dashboard agrega resolvidos/conversas/aprovação/tema-do-dia
+```mermaid
+flowchart LR
+  WA[WhatsApp] --> API[Backend]
+  API --> Tickets[(Mongo)]
+  API --> Mapa[GeoJSON + bairros]
+  UI[React] --> API
+```
 
-→ snippets: [histórico+tema](../snippets/atendpolitiq/history-theme.md) · [bairro+IA](../snippets/atendpolitiq/bairro-ai-summary.md) · [RBAC](../snippets/atendpolitiq/rbac-assign.md)
+[architecture/atendpolitiq.md](../architecture/atendpolitiq.md)
 
-## Destaques
+## Destaques de implementação
 
-### Inteligência territorial
-- Atlas `bairros.js` com lat/lng por bairro
-- Mapa carrega `dqdecaxias.geojson`
-- `BairroSummary` como cache (tema dominante + ticketCount + summary)
-
-### RBAC operacional
-Roles: `superadmin | admin | user | agent`  
-- Agent só lista `assignedTo: req.user.id`  
-- Assign restrito a `user|admin`  
-- Create/delete users só `superadmin`
-
-### Resiliência de NLP
-Tema/sentimento **offline** (barato, previsível) + resumo de bairro **online** com degradação graciosa.
+1. **Parser de histórico flexível** + taxonomia de temas ([snippet](../snippets/atendpolitiq/history-theme.md))
+2. **Atlas de bairros + GeoJSON** com match fuzzy (sem diacrítico) e cache `BairroSummary`
+3. **Resumo territorial com IA** e fallback determinístico se a API falhar ([snippet](../snippets/atendpolitiq/bairro-ai-summary.md))
+4. **RBAC** `superadmin | admin | user | agent` — agente só vê a própria fila; assign restrito ([snippet](../snippets/atendpolitiq/rbac-assign.md))
+5. Agregações de dashboard: resolvidos/dia, conversas/dia, tema dominante, aprovação ao longo do tempo
 
 ## Decisões
 
-| Decisão | Trade-off |
-|---------|-----------|
-| Keywords antes de LLM para tema | barato/explicável; menos nuance semântica |
-| OpenAI só no resumo territorial | custo controlado; humor do mapa ainda “IA” |
-| Normalização de bairro local | robustez a digitação; manutenção do atlas |
-| Backend single-file | entrega rápida solo; limite de modularidade |
+| Escolhi | Porque |
+|---------|--------|
+| Keywords para tema | barato, explicável, offline |
+| OpenAI só no resumo do mapa | custo controlado onde o texto agregado importa |
+| Atlas local de bairros | robustez à digitação do cidadão/chatbot |
+| Papéis na API e nas rotas | operação real de time, não inbox único |
 
-## Limites (honestos)
+## Evolução
 
-- Classificação por keywords ≠ NLP profundo
-- Sentimento léxico é aproximação
-- Credenciais devem viver só em env (nunca hardcode em produção)
-- Escala futura pediria filas e serviços extraídos de `server.js`
+Modularizar o backend além do single-file e, se o volume crescer, introduzir fila para ingestão e recálculo de resumos.
 
-## Reflexão
+## Stack
 
-O valor Tech Lead aqui é o **sistema de operação + território**, não um chatbot isolado: ticket, papel, mapa, cache de resumo e fallback.
+Node · Express · MongoDB · React/Vite · OpenAI · GeoJSON

@@ -1,18 +1,12 @@
-# BR-Oleg
+# Guilherme (BR-Oleg)
 
-Engenheiro **full-stack** com perfil de **Tech Lead** — produtos web/mobile e sistemas de atendimento, entregues **solo**.
+Full-stack / Tech Lead — SaaS operacional, mobile e sistemas de atendimento.
 
-**Foco atual:** SaaS operacional (marketplaces, inventário, NF-e, financeiro) · apps consumer · dashboards de operação · omnichannel.
+**Agora:** marketplaces (pedidos, margem, fiscal), apps consumer e dashboards de operação.
 
-## Destaques
+## Projetos
 
-- **[Cases de engenharia](https://github.com/BR-Oleg/portfolio)** — narrativa + arquitetura dos projetos privados (sem dump de código)
-- **[PseudoCRMRanking](https://github.com/BR-Oleg/PseudoCRMRanking)** — prova pública full-stack (Express + Mongo + React)
+- **[Cases](https://github.com/BR-Oleg/portfolio)** — SaaSML, Prato Seguro, AtendPolitiq e outros, com trechos de código
+- **[PseudoCRMRanking](https://github.com/BR-Oleg/PseudoCRMRanking)** — full-stack aberto (Express + Mongo + React)
 
-## Como eu trabalho
-
-Sistemas de ponta a ponta: modelagem, APIs, UI, integrações, deploy e documentação honesta de limites.
-
-## Contato
-
-Abra uma issue em [portfolio](https://github.com/BR-Oleg/portfolio) ou use o GitHub.
+Trabalho solo, ponta a ponta: produto, engenharia e operação.
